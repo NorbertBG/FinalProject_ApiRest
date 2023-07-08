@@ -8,7 +8,7 @@ router.get("/", (req, res, next) => {
   res.json("All good in here");
 });
 
-router.post("/dashboards", (req, res, next) => {
+router.post("/dashboards/create", (req, res, next) => {
   const { title, description } = req.body;
 
   Dashboard.create({ title, description, contents: [] })
