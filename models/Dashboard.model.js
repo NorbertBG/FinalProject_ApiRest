@@ -5,8 +5,8 @@ const dashboardSchema = new Schema({
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     title: String,
     description: String,
-    contents: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Content' }
+    posts: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Post' }
       ]
     });
     
