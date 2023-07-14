@@ -8,7 +8,7 @@ const postSchema = new Schema({
     // idQuote:  { type: mongoose.Schema.Types.ObjectId, ref: 'Quote' },
     // idImage:  { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
     
-    format: { type: String, required: true, enum: ['Song', 'Quote', 'Image'] },
+    format: { type: String, required: true, enum: ['song', 'quote', 'image'] },
     idContent: { type: mongoose.Schema.Types.ObjectId, refPath: 'format', required: true },
   },
 

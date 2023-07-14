@@ -18,6 +18,9 @@ require("./config")(app);
 const dashboardRoutes = require("./routes/dashboard.routes");
 app.use("/api", dashboardRoutes);
 
+const postsRoutes = require("./routes/posts.routes");
+app.use("/api", postsRoutes);
+
 const profileRoutes = require("./routes/profile.routes");
 app.use("/api", profileRoutes);
 

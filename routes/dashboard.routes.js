@@ -4,26 +4,23 @@ const mongoose = require("mongoose");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware")
 const Dashboard = require("../models/Dashboard.model")
-const Quote = require("../models/Quote.model")
 const Post = require("../models/Post.model")
+const Quote = require("../models/Quote.model")
+const Image = require("../models/Image.model")
+const Song = require("../models/Song.model")
+
 
 
 
 // HOME --> retrieve all dashboards + popu users info
 router.get("/", (req, res, next) => {
   Dashboard.find()
+    .populate("users")
     .then((allDashboards) => {
       // console.log(allDashboards)
       res.json(allDashboards)
     })
     .catch((err) => res.json(err));
-});
-
-
-
-// CREATE Dashboard
-router.get("/create", isAuthenticated, (req, res, next) => {
-  res.json("hola")
 });
 
 
@@ -42,20 +39,7 @@ router.post("/create", isAuthenticated, (req, res, next) => {
 
 
 
-// DELETE Dashboard
-router.post("/:dashboardId/delete", isAuthenticated, (req, res, next) => {
-  const { dashboardId } = req.params;
-
-  Dashboard.findByIdAndDelete(dashboardId)
-    .then(() => res.status(200).json("Dashboard deletted"))
-    .catch((err) => res.json(err));
-});
-
-
-
-
-
-// VIEW one Dashboard
+// VIEW one Dashboard + all populates
 router.get("/:dashboardId", (req, res, next) => {
   const { dashboardId } = req.params;
 
@@ -65,6 +49,16 @@ router.get("/:dashboardId", (req, res, next) => {
   }
 
   Dashboard.findById(dashboardId)
+  Dashboard.find()
+  .populate({
+    path: "users",
+    select: "name email" 
+  })
+  .populate({
+    path: "posts",
+    populate: 
+    { path: "idContent", model: "Quote", select: "text" }
+  })
     .then((dashboard) => res.status(200).json(dashboard))
     .catch((err) => res.json(err));
 
@@ -73,36 +67,38 @@ router.get("/:dashboardId", (req, res, next) => {
 
 
 
-// CREATE one Quote Post inside a Dashboard
-router.post("/:dashboardId/create-quote", isAuthenticated, (req, res, next) => {
-  // Available Data:
-  const { dashboardId } = req.params
-  const { text } = req.body
-  const authorId = req.payload._id
+// UPDATE on Dashboard (settings dashboard)
+router.put("/:dashboardId/settings", (req, res, next) => {
+  const { dashboardId } = req.params;
 
-    Quote.create({ text: text }) 
-      .then((quote) => {
-        Post.create({ idContent: quote._id, format: 'Quote', author: authorId })
-          .then((post) => {
-             Dashboard.findByIdAndUpdate(dashboardId, {
-              $push: { posts: post._id }
-            })
-              .then(() => {
-                res.status(200).json({ message: "Post created successfully" });
-              })
-              .catch((err) => {
-                res.status(500).json({ error: "Failed to update dashboard", err });
-              });
-          })
-          .catch((err) => {
-            res.status(500).json({ error: "Failed to create post", err });
-          });
-      })
-      .catch((err) => {
-        res.status(500).json({ error: "Failed to create quote", err });
-      });
-  });
+  if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
 
+  Dashboard.findByIdAndUpdate(dashboardId, req.body, { new: true })
+    .then((updatedDashboard) => res.json(updatedDashboard))
+    .catch((err) => res.json(err));
+
+});
+
+
+
+
+
+// DELETE Dashboard
+router.post("/:dashboardId/delete", isAuthenticated, (req, res, next) => {
+  const { dashboardId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
+    res.status(400).json({ message: "Specified id is not valid" })
+    return;
+  };
+
+  Dashboard.findByIdAndDelete(dashboardId)
+    .then(() => res.status(200).json(`Dashboard wit the id: ${dashboardId} has been succesfully removed`))
+    .catch((err) => res.json(err));
+});
 
 
 module.exports = router;

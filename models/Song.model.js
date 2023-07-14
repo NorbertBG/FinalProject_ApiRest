@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const pathSchema = new Schema(
+const songSchema = new Schema(
   {
     title: {
       type: String,
+      required: [true, "Title is required."],
     },
 
   },
@@ -15,6 +15,6 @@ const pathSchema = new Schema(
   }
 );
 
-const Path = model("Path", pathSchema);
+const Song = model("Song", songSchema);
 
-module.exports = Path;
+module.exports = Song;

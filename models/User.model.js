@@ -22,7 +22,7 @@ const userSchema = new Schema(
     profileImage : {
       type: String,
     },
-    dashboards : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    dashboards : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dashboard' }]
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
