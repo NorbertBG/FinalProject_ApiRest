@@ -27,6 +27,26 @@ router.get("/", (req, res, next) => {
 
 
 
+// HOME --> Adding a new user in a existing dashboard wih the dashboard id provided by email
+router.put("/referral-code", (req, res, next) => {
+ 
+  const { dashboardId } = req.body;
+  const userId = req.payload._id
+
+    Dashboard.findByIdAndUpdate(
+      dashboardId,
+      { $push: { users: userId } },
+      { new: true }
+    )
+      .then(() =>
+        console.log("User and Dashboard linked successfully")
+      )
+      .catch((err) => console.log(err));
+});
+
+
+
+
 // CREATE Dashboard (add photo)
 router.post("/create", (req, res, next) => {
   const { title, description } = req.body;
