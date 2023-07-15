@@ -4,15 +4,16 @@ const mongoose = require("mongoose");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware")
 const Dashboard = require("../models/Dashboard.model")
+const User = require("../models/User.model");
 const Post = require("../models/Post.model")
 const Quote = require("../models/Quote.model")
 const Image = require("../models/Image.model")
-const Song = require("../models/Song.model")
+const Song = require("../models/Song.model");
 
 
 
 
-// HOME --> retrieve all dashboards + popu users info
+// HOME --> retrieve all dashboards + populate users info
 router.get("/", (req, res, next) => {
   Dashboard.find()
     .populate("users")
@@ -26,14 +27,18 @@ router.get("/", (req, res, next) => {
 
 
 
-// CREATE Dashboard
-router.post("/create", isAuthenticated, (req, res, next) => {
+// CREATE Dashboard (add photo)
+router.post("/create", (req, res, next) => {
   const { title, description } = req.body;
   const userId = req.payload._id
 
   Dashboard.create({ title, description, posts: [], users: [userId] })
-    .then((response) => res.json(response))
-    .catch((err) => res.json(err));
+    .then((dashboard) => {
+
+      User.findByIdAndUpdate(userId, { $push: { dashboards: dashboard._id } })
+        .then(() => res.json(dashboard))
+        .catch((err) => res.json(err));
+    })
 });
 
 
@@ -50,18 +55,17 @@ router.get("/:dashboardId", (req, res, next) => {
 
   Dashboard.findById(dashboardId)
   Dashboard.find()
-  .populate({
-    path: "users",
-    select: "name email" 
-  })
-  .populate({
-    path: "posts",
-    populate: {
-      path: "idContent"
-    }
-  })
- 
-  
+    .populate({
+      path: "users",
+      select: "name email"
+    })
+    .populate({
+      path: "posts",
+      populate: {
+        path: "idContent"
+      }
+    })
+
     .then((dashboard) => res.status(200).json(dashboard))
     .catch((err) => res.json(err));
 

@@ -20,13 +20,13 @@ require("./config")(app);
 
 // 👇 Start handling routes here
 const dashboardRoutes = require("./routes/dashboard.routes");
-app.use("/api", dashboardRoutes);
+app.use("/api", isAuthenticated, dashboardRoutes);
 
 const postsRoutes = require("./routes/posts.routes");
 app.use("/api", isAuthenticated, postsRoutes);
 
 const profileRoutes = require("./routes/profile.routes");
-app.use("/api", profileRoutes);
+app.use("/api", isAuthenticated, profileRoutes);
 
 const authRoutes = require("./routes/auth.routes");
 
