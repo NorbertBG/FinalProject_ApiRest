@@ -56,9 +56,12 @@ router.get("/:dashboardId", (req, res, next) => {
   })
   .populate({
     path: "posts",
-    populate: 
-    { path: "idContent", model: "Quote", select: "text" }
+    populate: {
+      path: "idContent"
+    }
   })
+ 
+  
     .then((dashboard) => res.status(200).json(dashboard))
     .catch((err) => res.json(err));
 

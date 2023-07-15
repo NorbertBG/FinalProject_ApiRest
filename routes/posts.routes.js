@@ -23,7 +23,7 @@ router.post("/:dashboardId/create-quote", (req, res, next) => {
           return res.status(500).json({ error: "Failed to create quote" });
         }
   
-        Post.create({ idContent: quote._id, format: 'quote', author: authorId })
+        Post.create({ idContent: quote._id, format: 'Quote', author: authorId })
           .then((post) => {
             if (!post) {
               return res.status(500).json({ error: "Failed to create post" });
