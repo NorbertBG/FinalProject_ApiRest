@@ -50,7 +50,7 @@ router.put("/referral-code", (req, res, next) => {
 router.post("/create", upload.single('image'), (req, res, next) => {
   const { title, description } = req.body;
   const userId = req.payload._id
-  const imageUrl = req.file.secure_url;
+  const imageUrl = req.file.path;
 
   Dashboard.create({ title, description, posts: [], image: imageUrl, users: [userId]  })
     .then((dashboard) => {
@@ -87,6 +87,24 @@ router.get("/:dashboardId", (req, res, next) => {
     })
 
     .then((dashboard) => res.status(200).json(dashboard))
+    .catch((err) => res.json(err));
+
+});
+
+
+
+
+// VIEW settings Dashboard 
+router.get("/:dashboardId/settings", (req, res, next) => {
+  const { dashboardId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Dashboard.findById(dashboardId)
+    .then((dashboardSettins) => res.json(dashboardSettins))
     .catch((err) => res.json(err));
 
 });

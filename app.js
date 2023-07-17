@@ -29,7 +29,6 @@ const profileRoutes = require("./routes/profile.routes");
 app.use("/api", isAuthenticated, profileRoutes);
 
 const authRoutes = require("./routes/auth.routes");
-
 app.use("/auth", authRoutes);
 
 
