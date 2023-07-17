@@ -27,25 +27,19 @@ router.get("/profile", (req, res, next) => {
 
 
 
-// UPDATE profile info
-router.put("/profile", (req, res, next) => {
+// UPDATE profile info including username and profile image
+router.put("/profile", upload.single("profileImage"), (req, res, next) => {
   const userId = req.payload._id;
   const { userName } = req.body;
+  const imageUrl = req.file ? req.file.path : null; // Check if an image is uploaded
 
-  User.findByIdAndUpdate(userId, { userName }, { new: true })
-    .then((updatedProfile) => res.json(updatedProfile))
-    .catch((err) => res.json(err));
-});
+  // Create an object to store the updated profile data
+  const updatedProfileData = { userName };
+  if (imageUrl) {
+    updatedProfileData.profileImage = imageUrl;
+  }
 
-
-
-
-// ADD a profile Image
-router.post('/profile/image', upload.single('profileImage'), (req, res, next) => {
-  const userId = req.payload._id;
-  const imageUrl = req.file.secure_url;
-
-  User.findByIdAndUpdate(userId, { profileImage: imageUrl }, { new: true })
+  User.findByIdAndUpdate(userId, updatedProfileData, { new: true })
     .then((updatedProfile) => res.json(updatedProfile))
     .catch((err) => res.json(err));
 });
