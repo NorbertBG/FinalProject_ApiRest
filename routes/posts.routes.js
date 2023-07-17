@@ -65,7 +65,7 @@ router.post("/:dashboardId/create-song", (req, res, next) => {
           if (!song) {
             return res.status(500).json({ error: "Failed to create song" });
           }
-            Post.create({ idContent: song._id, format: 'song', author: authorId })
+            Post.create({ idContent: song._id, format: 'Song', author: authorId })
                 .then((post) => {
                     Dashboard.findByIdAndUpdate(dashboardId, {
                         $push: { posts: post._id }
@@ -94,14 +94,15 @@ router.post("/:dashboardId/create-image", upload.single('path'), (req, res, next
     // Available Data:
     const { dashboardId } = req.params
     const authorId = req.payload._id
-    const imageUrl = req.file.secure_url;
+    const imageUrl = req.file.path;
 
+    console.log(imageUrl)
     Image.create({ path: imageUrl })
         .then((image) => {
           if (!image) {
             return res.status(500).json({ error: "Failed to create image" });
           }
-            Post.create({ idContent: image._id, format: 'image', author: authorId })
+            Post.create({ idContent: image._id, format: 'Image', author: authorId })
                 .then((post) => {
                     Dashboard.findByIdAndUpdate(dashboardId, {
                         $push: { posts: post._id }
