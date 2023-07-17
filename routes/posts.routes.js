@@ -9,6 +9,8 @@ const Post = require("../models/Post.model")
 const Song = require("../models/Song.model")
 const Image = require("../models/Image.model")
 
+const upload = require('../config/cloudinary.config');
+
 
 
 // CREATE one Quote Post inside a Dashboard
@@ -88,13 +90,13 @@ router.post("/:dashboardId/create-song", (req, res, next) => {
 
 
 // CREATE one Image Post inside a Dashboard
-router.post("/:dashboardId/create-image", (req, res, next) => {
+router.post("/:dashboardId/create-image", upload.single('path'), (req, res, next) => {
     // Available Data:
     const { dashboardId } = req.params
-    const { path } = req.body
     const authorId = req.payload._id
+    const imageUrl = req.file.secure_url;
 
-    Image.create({ path: path })
+    Image.create({ path: imageUrl })
         .then((image) => {
           if (!image) {
             return res.status(500).json({ error: "Failed to create image" });

@@ -2,13 +2,17 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const { isAuthenticated } = require("../middleware/jwt.middleware")
+//Importin all middlewares
+const upload = require('../config/cloudinary.config');
+
+
 const User = require("../models/User.model")
 
 
 
+
 // VIEW Profile info--> retrieve all user info
-router.get("/profile", isAuthenticated, (req, res, next) => {
+router.get("/profile", (req, res, next) => {
     const userId = req.payload._id;
   
     User.findById(userId)
@@ -22,15 +26,31 @@ router.get("/profile", isAuthenticated, (req, res, next) => {
   
 
 
+
 // UPDATE profile info
-router.put("/profile", isAuthenticated, (req, res, next) => {
+router.put("/profile", (req, res, next) => {
+  const userId = req.payload._id;
+  const { userName } = req.body;
 
-    const userId = req.payload._id
+  User.findByIdAndUpdate(userId, { userName }, { new: true })
+    .then((updatedProfile) => res.json(updatedProfile))
+    .catch((err) => res.json(err));
+});
 
-    User.findByIdAndUpdate(userId, req.body, { new: true })
-        .then((updatedProfile) => res.json(updatedProfile))
-        .catch((err) => res.json(err));
-})
+
+
+
+// ADD a profile Image
+router.post('/profile/image', upload.single('profileImage'), (req, res, next) => {
+  const userId = req.payload._id;
+  const imageUrl = req.file.secure_url;
+
+  User.findByIdAndUpdate(userId, { profileImage: imageUrl }, { new: true })
+    .then((updatedProfile) => res.json(updatedProfile))
+    .catch((err) => res.json(err));
+});
+
+
 
 
 

@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const { isAuthenticated } = require("../middleware/jwt.middleware")
+//Importin all middlewares
+const upload = require('../config/cloudinary.config');
+
+// All Models imported
 const Dashboard = require("../models/Dashboard.model")
 const User = require("../models/User.model");
-const Post = require("../models/Post.model")
-const Quote = require("../models/Quote.model")
-const Image = require("../models/Image.model")
-const Song = require("../models/Song.model");
 
 
 
@@ -48,11 +47,12 @@ router.put("/referral-code", (req, res, next) => {
 
 
 // CREATE Dashboard (add photo)
-router.post("/create", (req, res, next) => {
+router.post("/create", upload.single('image'), (req, res, next) => {
   const { title, description } = req.body;
   const userId = req.payload._id
+  const imageUrl = req.file.secure_url;
 
-  Dashboard.create({ title, description, posts: [], users: [userId] })
+  Dashboard.create({ title, description, posts: [], image: imageUrl, users: [userId]  })
     .then((dashboard) => {
 
       User.findByIdAndUpdate(userId, { $push: { dashboards: dashboard._id } })
@@ -114,7 +114,7 @@ router.put("/:dashboardId/settings", (req, res, next) => {
 
 
 // DELETE Dashboard
-router.post("/:dashboardId/delete", isAuthenticated, (req, res, next) => {
+router.post("/:dashboardId/delete", (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
