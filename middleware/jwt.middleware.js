@@ -23,25 +23,9 @@ function getTokenFromHeaders(req) {
   return null;
 }
 
-// Cache-busting middleware
-function cacheBusting(req, res, next) {
-  // Append a version or timestamp query parameter to the static file URLs
-  const bustingQuery = `v=${Date.now()}`;
-
-  // Modify the response headers to instruct the browser not to cache the files
-  res.set("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.set("Pragma", "no-cache");
-  res.set("Expires", "0");
-
-  // Append the cache-busting query parameter to the requested URL
-  req.url += (req.url.indexOf("?") === -1 ? "?" : "&") + bustingQuery;
-
-  next();
-}
 
 
 // Export the middleware so that we can use it to create protected routes
 module.exports = {
-  isAuthenticated,
-  cacheBusting,
+  isAuthenticated
 };

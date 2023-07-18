@@ -16,7 +16,7 @@ const User = require("../models/User.model");
 router.get("/", (req, res, next) => {
 
   const userId = req.payload._id
-
+console.log(userId)
   User.findById(userId)
     .populate("dashboards")
     .then((user) => {
