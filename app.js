@@ -19,14 +19,14 @@ const app = express();
 require("./config")(app);
 
 // 👇 Start handling routes here
+const profileRoutes = require("./routes/profile.routes");
+app.use("/api", isAuthenticated, profileRoutes);
+
 const dashboardRoutes = require("./routes/dashboard.routes");
 app.use("/api", isAuthenticated, dashboardRoutes);
 
 const postsRoutes = require("./routes/posts.routes");
 app.use("/api", isAuthenticated, postsRoutes);
-
-const profileRoutes = require("./routes/profile.routes");
-app.use("/api", isAuthenticated, profileRoutes);
 
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);

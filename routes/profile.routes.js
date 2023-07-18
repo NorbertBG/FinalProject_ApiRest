@@ -13,8 +13,7 @@ const User = require("../models/User.model")
 
 // VIEW Profile info--> retrieve all user info
 router.get("/profile", (req, res, next) => {
-  console.log("profile route");
-  return;
+
     const userId = req.payload._id;
     console.log(`this is the userId, ${req.payload}`)
     User.findById(userId)
