@@ -14,11 +14,14 @@ const User = require("../models/User.model");
 
 // HOME --> retrieve all dashboards + populate users info
 router.get("/", (req, res, next) => {
-  Dashboard.find()
-    .populate("users")
-    .then((allDashboards) => {
-      // console.log(allDashboards)
-      res.json(allDashboards)
+
+  const userId = req.payload._id
+
+  User.findById(userId)
+    .populate("dashboards")
+    .then((user) => {
+      // user.dashboards will now contain the dashboards associated with the user
+      res.json(user.dashboards);
     })
     .catch((err) => res.json(err));
 });
