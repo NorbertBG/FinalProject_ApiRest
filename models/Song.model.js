@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const songSchema = new Schema(
   {
-    title: {
+    path: {
       type: String,
       required: [true, "Title is required."],
     },

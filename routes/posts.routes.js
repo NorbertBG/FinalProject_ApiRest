@@ -57,10 +57,10 @@ router.post("/dashboard/:dashboardId/create-quote", (req, res, next) => {
 router.post("/dashboard/:dashboardId/create-song", (req, res, next) => {
     // Available Data:
     const { dashboardId } = req.params
-    const { title } = req.body
+    const { path } = req.body
     const authorId = req.payload._id
 
-    Song.create({ title: title })
+    Song.create({ path: path })
         .then((song) => {
           if (!song) {
             return res.status(500).json({ error: "Failed to create song" });
