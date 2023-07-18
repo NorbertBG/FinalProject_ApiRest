@@ -29,21 +29,33 @@ router.get("/", (req, res, next) => {
 
 
 
-// HOME --> Adding a new user in a existing dashboard wih the dashboard id provided by email
+// HOME --> Adding a new user in an existing dashboard with the dashboard id provided by email
 router.put("/referral-code", (req, res, next) => {
- 
   const { dashboardId } = req.body;
-  const userId = req.payload._id
+  const userId = req.payload._id;
 
-    Dashboard.findByIdAndUpdate(
-      dashboardId,
-      { $push: { users: userId } },
-      { new: true }
-    )
-      .then(() =>
-        console.log("User and Dashboard linked successfully")
+  // Update the Dashboard model to add the userId in the users array
+  Dashboard.findByIdAndUpdate(
+    dashboardId,
+    { $push: { users: userId } },
+    { new: true }
+  )
+    .then((dashboard) => {
+      console.log("User and Dashboard linked successfully");
+
+      // Now, update the User model to add the dashboardId in the dashboards array
+      User.findByIdAndUpdate(
+        userId,
+        { $push: { dashboards: dashboardId } },
+        { new: true }
       )
-      .catch((err) => console.log(err));
+        .then(() => {
+          console.log("Dashboard added to User successfully");
+          res.status(200).json({ message: "User and Dashboard linked successfully" });
+        })
+        .catch((err) => next(err));
+    })
+    .catch((err) => next(err));
 });
 
 
