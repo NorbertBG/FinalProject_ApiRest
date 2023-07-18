@@ -139,16 +139,23 @@ router.get("/dashboard/:dashboardId/settings", (req, res, next) => {
 
 
 // UPDATE on Dashboard (settings dashboard)
-router.put("/dashboard/:dashboardId/settings", (req, res, next) => {
+router.put("/dashboard/:dashboardId/settings", upload.single("image"), (req, res, next) => {
   const { dashboardId } = req.params;
-
+  const imageUrl = req.file ? req.file.path : null; 
+  const { dashboard } = req.body
+  
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-  Dashboard.findByIdAndUpdate(dashboardId, req.body, { new: true })
-    .then((updatedDashboard) => res.json(updatedDashboard))
+const updatedDashboard = { dashboard }
+  if (imageUrl) {
+    updatedDashboard.image = imageUrl;
+  }
+
+  Dashboard.findByIdAndUpdate(dashboardId, updatedDashboard, { new: true })
+    .then((updatedData) => res.json(updatedData))
     .catch((err) => res.json(err));
 
 });
