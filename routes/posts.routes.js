@@ -14,7 +14,7 @@ const upload = require('../config/cloudinary.config');
 
 
 // CREATE one Quote Post inside a Dashboard
-router.post("/:dashboardId/create-quote", (req, res, next) => {
+router.post("/dashboard/:dashboardId/create-quote", (req, res, next) => {
     const { dashboardId } = req.params;
     const { text } = req.body;
     const authorId = req.payload._id;
@@ -54,7 +54,7 @@ router.post("/:dashboardId/create-quote", (req, res, next) => {
 
 
 // CREATE one Song Post inside a Dashboard
-router.post("/:dashboardId/create-song", (req, res, next) => {
+router.post("/dashboard/:dashboardId/create-song", (req, res, next) => {
     // Available Data:
     const { dashboardId } = req.params
     const { title } = req.body
@@ -90,7 +90,7 @@ router.post("/:dashboardId/create-song", (req, res, next) => {
 
 
 // CREATE one Image Post inside a Dashboard
-router.post("/:dashboardId/create-image", upload.single('path'), (req, res, next) => {
+router.post("/dashboard/:dashboardId/create-image", upload.single('path'), (req, res, next) => {
     // Available Data:
     const { dashboardId } = req.params
     const authorId = req.payload._id

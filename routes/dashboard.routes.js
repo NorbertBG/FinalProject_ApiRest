@@ -13,7 +13,7 @@ const User = require("../models/User.model");
 
 
 // HOME --> retrieve all dashboards + populate users info
-router.get("/", (req, res, next) => {
+router.get("/home", (req, res, next) => {
 
   const userId = req.payload._id
 console.log(userId)
@@ -79,7 +79,7 @@ router.post("/create", upload.single('image'), (req, res, next) => {
 
 
 
-router.get("/:dashboardId", async (req, res, next) => {
+router.get("/dashboard/:dashboardId", async (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
@@ -121,7 +121,7 @@ router.get("/:dashboardId", async (req, res, next) => {
 
 
 // VIEW settings Dashboard 
-router.get("/:dashboardId/settings", (req, res, next) => {
+router.get("/dashboard/:dashboardId/settings", (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
@@ -139,7 +139,7 @@ router.get("/:dashboardId/settings", (req, res, next) => {
 
 
 // UPDATE on Dashboard (settings dashboard)
-router.put("/:dashboardId/settings", (req, res, next) => {
+router.put("/dashboard/:dashboardId/settings", (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
@@ -158,7 +158,7 @@ router.put("/:dashboardId/settings", (req, res, next) => {
 
 
 // DELETE Dashboard
-router.post("/:dashboardId/delete", (req, res, next) => {
+router.post("/dashboard/:dashboardId/delete", (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
