@@ -6,7 +6,7 @@ require("dotenv").config();
 require("./db");
 
 // Importing middleware 
-const { isAuthenticated } = require("./middleware/jwt.middleware");
+const { cacheBusting, isAuthenticated } = require("./middleware/jwt.middleware");
 
 
 // Handles http requests (express is node js framework)
@@ -20,13 +20,13 @@ require("./config")(app);
 
 // 👇 Start handling routes here
 const dashboardRoutes = require("./routes/dashboard.routes");
-app.use("/api", isAuthenticated, dashboardRoutes);
+app.use("/api", isAuthenticated, cacheBusting, dashboardRoutes);
 
 const postsRoutes = require("./routes/posts.routes");
-app.use("/api", isAuthenticated, postsRoutes);
+app.use("/api", isAuthenticated, cacheBusting, postsRoutes);
 
 const profileRoutes = require("./routes/profile.routes");
-app.use("/api", isAuthenticated, profileRoutes);
+app.use("/api", isAuthenticated, cacheBusting, profileRoutes);
 
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
