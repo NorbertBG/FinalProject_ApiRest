@@ -79,8 +79,7 @@ router.post("/create", upload.single('image'), (req, res, next) => {
 
 
 
-// VIEW one Dashboard + all populates
-router.get("/:dashboardId", (req, res, next) => {
+router.get("/:dashboardId", async (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
@@ -88,22 +87,34 @@ router.get("/:dashboardId", (req, res, next) => {
     return;
   }
 
-  Dashboard.findById(dashboardId)
-  Dashboard.find()
-    .populate({
-      path: "users",
-      select: "name email"
-    })
-    .populate({
-      path: "posts",
-      populate: {
-        path: "idContent"
-      }
-    })
+  try {
+    const dashboard = await Dashboard.findById(dashboardId)
+      .populate({
+        path: "users",
+        select: "name email"
+      })
+      .populate({
+        path: "posts",
+        populate: {
+          path: "idContent",
+          // Select only necessary fields for each post format
+          select: "-createdAt -updatedAt"
+        }
+      })
+      .exec();
 
-    .then((dashboard) => res.status(200).json(dashboard))
-    .catch((err) => res.json(err));
+    if (!dashboard) {
+      res.status(404).json({ message: "Dashboard not found" });
+      return;
+    }
 
+    // Sort the posts array by timestamp in descending order
+    dashboard.posts.sort((a, b) => b.createdAt - a.createdAt);
+
+    res.status(200).json(dashboard);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 
