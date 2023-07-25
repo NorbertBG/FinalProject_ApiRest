@@ -7,7 +7,6 @@ const quoteSchema = new Schema(
       type: String,
       required: [true, "Text is required."],
     },
-
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

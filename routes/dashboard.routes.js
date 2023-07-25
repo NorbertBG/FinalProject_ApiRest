@@ -98,7 +98,7 @@ router.get("/dashboard/:dashboardId", async (req, res, next) => {
         populate: {
           path: "idContent",
           // Select only necessary fields for each post format
-          select: "-createdAt -updatedAt"
+          select: " -createdAt -updatedAt"
         }
       })
       .exec();
@@ -142,19 +142,21 @@ router.get("/dashboard/:dashboardId/settings", (req, res, next) => {
 router.put("/dashboard/:dashboardId/settings", upload.single("image"), (req, res, next) => {
   const { dashboardId } = req.params;
   const imageUrl = req.file ? req.file.path : null; 
-  const { dashboard } = req.body
+  const { title, description } = req.body
   
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-const updatedDashboard = { dashboard }
+  // Create an object to store the updated profile data
+  const updatedDashboardData = { title, description };
+const updatedDashboard = {  }
   if (imageUrl) {
     updatedDashboard.image = imageUrl;
   }
 
-  Dashboard.findByIdAndUpdate(dashboardId, updatedDashboard, { new: true })
+  Dashboard.findByIdAndUpdate(dashboardId,  updatedDashboardData ,{ new: true })
     .then((updatedData) => res.json(updatedData))
     .catch((err) => res.json(err));
 
@@ -165,7 +167,7 @@ const updatedDashboard = { dashboard }
 
 
 // DELETE Dashboard
-router.post("/dashboard/:dashboardId/delete", (req, res, next) => {
+router.delete("/dashboard/:dashboardId/delete", (req, res, next) => {
   const { dashboardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(dashboardId)) {
